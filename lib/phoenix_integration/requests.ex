@@ -52,7 +52,7 @@ defmodule PhoenixIntegration.Requests do
       end
   """
 
-  @endpoint Application.get_env(:phoenix_integration, :endpoint)
+  @endpoint Application.compile_env(:phoenix_integration, :endpoint)
 
   # ----------------------------------------------------------------------------
   @doc """
@@ -451,8 +451,6 @@ defmodule PhoenixIntegration.Requests do
     request_path(conn, form_action, form_method, form_data)
   end
 
-
-
   # ----------------------------------------------------------------------------
   @doc """
   Finds a form in conn.resp_body, fills out the fields with the given
@@ -492,7 +490,7 @@ defmodule PhoenixIntegration.Requests do
           content_type: "image/jpg",
           path: "/var/mytests/photo.jpg",
           filename: "photo.jpg"}
-  
+
         # fill out a form and submit it
         get( conn, thing_path(conn, :edit, thing) )
         |> follow_form( %{ thing: %{
@@ -613,7 +611,7 @@ defmodule PhoenixIntegration.Requests do
     # fetch the main form attributes
     form = %{
       method: form_method(raw_form),
-      inputs: tree_after_emitted_warnings(raw_form) |> TreeFinish.to_form_params
+      inputs: tree_after_emitted_warnings(raw_form) |> TreeFinish.to_form_params()
     }
 
     form =
@@ -1060,9 +1058,11 @@ defmodule PhoenixIntegration.Requests do
   # ----------------------------------------------------------------------------
   defp build_form_data(form, user_tree) do
     tree = tree_after_emitted_warnings(form)
+
     case TreeEdit.apply_edits(tree, user_tree) do
       {:ok, edited} ->
         TreeFinish.to_action_params(edited)
+
       {:error, errors} ->
         Form.Messages.emit(errors, form)
         raise "Stopping"
