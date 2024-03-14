@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 case Mix.env() do
   :test ->
@@ -8,6 +8,7 @@ case Mix.env() do
       endpoint: PhoenixIntegration.TestEndpoint
 
     config :phoenix, :json_library, Jason
+
   _ ->
     nil
 end
